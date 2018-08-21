@@ -1,18 +1,29 @@
-from selenium import webdriver
-from selenium.webdriver.common import keys
+from PyQt5.QtWidgets import QMainWindow, QWidget, QApplication
+import sys
+from testWidget import TestWidget
 
-driver = webdriver.Chrome('C:\\Users\\zachm\\Documents\\chromedriver_win32\\chromedriver')
-usr = "zach"
-pw = "swag420"
 
-driver.get('http://www.instagram.com')
+class MainWindow(QMainWindow):
 
-element = driver.find_element_by_id('email')
-element.send_keys(usr)
+    def __init__(self):
+        super(MainWindow, self).__init__()
 
-element =  driver.find_element_by_id('pass')
-element.send_keys("pw")
+        self.tw = TestWidget()
 
-element.send_keys(Keys.RETURN)
+        self.initUi()
+        self.main()
 
-driver.close()
+    def initUi(self):
+        self.statusBar().showMessage('Pick One')
+        self.setWindowTitle('main window')
+
+        self.setCentralWidget(self.tw)
+
+        self.show()
+
+    def main(self):
+        pass
+
+app = QApplication(sys.argv)
+win = MainWindow()
+sys.exit(app.exec_())

@@ -67,7 +67,7 @@ class InstagramWindow(QWidget):
             myUsername, ok = QInputDialog.getText(self, "Username", "Enter Username:")
             if not ok:
                 print('oops')
-            myPassword, ok = QInputDialog.getText(self, "Password", "Enter Password:")
+            myPassword, ok = QInputDialog.getText(self, "Password", "Enter Password:", QLineEdit.Password)
             if not ok:
                 print('oops')
 

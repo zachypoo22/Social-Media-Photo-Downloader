@@ -1,9 +1,10 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QLabel, QLineEdit, QHBoxLayout, QVBoxLayout,\
-    QPushButton, QInputDialog, QComboBox, QDockWidget, QFileDialog
+    QPushButton, QInputDialog, QComboBox, QDockWidget, QFileDialog, QMessageBox, QErrorMessage
 from PyQt5.QtCore import Qt, pyqtSignal
 import sys
 import re
 import time
+from LoginWindow import LoginWindow
 from urllib import request
 from selenium import webdriver
 from selenium.webdriver.common import keys
@@ -57,18 +58,38 @@ class FacebookWindow(QWidget):
 
     def click(self):
 
-        url = self.urlInput.text()
+        inputurl = self.urlInput.text()
+        url = ""
+
+        if re.match("(.*)facebook.com/(.*)/photos", inputurl):
+            url = inputurl
+        elif re.match("(.*)facebook.com/(.*)", inputurl):
+            url = "%s/photos" % inputurl
+        else:
+            self.err = QMessageBox()
+            self.err.setText("invalid facebook URL")
+            return
 
         # get login creds
         myUserName, good = QInputDialog.getText(self, "Username", "Input Username")
 
         if not good:
-            print("oops")
+            self.err = QMessageBox()
+            self.err.setText("ERROR: no username entered")
+            self.err.show()
+            return
 
-        myPassword, good = QInputDialog.getText(self, "Password", "Input Password")
+        myPassword, good = QInputDialog.getText(self, "Password", "Input Password", QLineEdit.Password)
 
         if not good:
-            print('oops')
+            self.err= QMessageBox()
+            self.err.setText("ERROR: no password entered")
+            self.err.show()
+            return
+
+        # other get login creds
+        # self.LW = LoginWindow()
+        # self.LW.show()
 
         ops = Options()
         ops.add_argument("--disable-notifications")

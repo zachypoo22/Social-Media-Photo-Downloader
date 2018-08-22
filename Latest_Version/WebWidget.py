@@ -59,6 +59,7 @@ class WebWidget(QWidget):
         mainLayout.addLayout(buttLayout)
 
         self.setLayout(mainLayout)
+        self.setWebUrl('https://www.google.com/search?biw=1920&bih=943&tbm=isch&sa=1&ei=As58W7WMKofs5gLM26eQDw&q=the+quieter+you+become+the+more+you+can+hear')
 
     def setWebUrl(self, url):
         self.browser.setUrl(QUrl(url))

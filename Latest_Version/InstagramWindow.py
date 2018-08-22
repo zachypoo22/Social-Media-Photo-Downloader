@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QLabel, QLineEdit, QHBoxLayout, QVBoxLayout,\
-    QPushButton, QInputDialog, QComboBox, QDockWidget, QFileDialog
+    QPushButton, QInputDialog, QComboBox, QDockWidget, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt, pyqtSignal
 import sys
 import re
@@ -56,14 +56,18 @@ class InstagramWindow(QWidget):
         self.submitButton.clicked.connect(self.click)
 
     def click(self):
-        wantToLogin, ok = QInputDialog.getItem(self, "Login", "do you want to login?", ("yes", "no"))
+        # wantToLogin, ok = QInputDialog.getItem(self, "Login", "do you want to login?", ("yes", "no"))
+        #
+        # if not ok:
+        #     print("oops")
 
-        if not ok:
-            print("oops")
+        wantToLogin = QMessageBox.question(self, 'Login?', 'Do you want to log in to Instagram?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
 
         url = self.urlInput.text()
 
-        if wantToLogin == "yes":
+        # if wantToLogin == "yes":
+        if wantToLogin == QMessageBox.Yes:
             myUsername, ok = QInputDialog.getText(self, "Username", "Enter Username:")
             if not ok:
                 print('oops')

@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QLabel, QLineEdit, QHBoxLayout, QVBoxLayout,\
     QPushButton, QInputDialog, QComboBox, QDockWidget, QFileDialog
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 import sys
 import re
 import time
@@ -10,6 +10,9 @@ from selenium.webdriver.common import keys
 from selenium.webdriver.chrome.options import Options
 
 class FacebookWindow(QWidget):
+
+    addSig = pyqtSignal(list)
+
     def __init__(self, driver):
         super(FacebookWindow, self).__init__()
 
@@ -17,6 +20,8 @@ class FacebookWindow(QWidget):
         self.width = 300
         self.top = 500
         self.left = 500
+
+        self.list = []
 
         ops = Options()
         ops.add_argument("--disable-notifications")
@@ -101,7 +106,7 @@ class FacebookWindow(QWidget):
             if re.match("(.*)/photos_all(.*)", link):
                 otherPhotosLink = link
 
-        print('2')
+
         # scroll down
         scrollToBottom(20)
 
@@ -119,7 +124,7 @@ class FacebookWindow(QWidget):
             pics = self.driver.find_elements_by_class_name("spotlight")
             for pic in pics:
                 plink = pic.get_attribute("src")
-                print(plink)  # would save here but....testing
+                self.list.append(plink)  # would save here but....testing
 
         print("------going to other photos page -------")
         self.driver.get(otherPhotosLink)
@@ -139,9 +144,15 @@ class FacebookWindow(QWidget):
             self.driver.get(l)
             time.sleep(2)
             pics = self.driver.find_elements_by_class_name("spotlight")
-            for pic in pics:
-                plink = pic.get_attribute("src")
-                print(plink)  # again, would save but still testing
 
+            for pic in pics:
+                try:
+                    plink = pic.get_attribute("src")
+                    self.list.append(plink)
+                except Exception as e:
+                    print(e)
+
+        self.addSig.emit(self.list)
         self.driver.close()
+        self.close()
 

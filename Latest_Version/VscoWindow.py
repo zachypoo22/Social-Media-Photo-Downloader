@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QLabel, QLineEdit, QHBoxLayout, QVBoxLayout,\
     QPushButton, QInputDialog, QComboBox, QDockWidget, QFileDialog
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 import sys
 import re
 import time
@@ -10,6 +10,9 @@ from selenium.webdriver.common import keys
 from selenium.webdriver.chrome.options import Options
 
 class VscoWindow(QWidget):
+
+    addSig = pyqtSignal(list)
+
     def __init__(self, driver):
         super(VscoWindow, self).__init__()
 
@@ -21,6 +24,8 @@ class VscoWindow(QWidget):
         self.width = 300
         self.top = 500
         self.left = 500
+
+        self.list = []
 
         self.initUi()
         self.main()
@@ -83,7 +88,8 @@ class VscoWindow(QWidget):
             linkObj = driver.find_elements_by_tag_name('img')
             for l in linkObj:
                 source = l.get_attribute('src')
-                print(source)
+                self.list.append(source)
 
+        self.addSig.emit(self.list)
         driver.close()
-
+        self.close()

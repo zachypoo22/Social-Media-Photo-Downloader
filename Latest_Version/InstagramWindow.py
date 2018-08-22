@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QLabel, QLineEdit, QHBoxLayout, QVBoxLayout,\
     QPushButton, QInputDialog, QComboBox, QDockWidget, QFileDialog
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 import sys
 import re
 import time
@@ -11,12 +11,16 @@ from selenium.webdriver.chrome.options import Options
 
 class InstagramWindow(QWidget):
 
+    addSig = pyqtSignal(list)
+
     def __init__(self, driver):
         super(InstagramWindow, self).__init__()
 
         ops = Options()
         ops.add_argument("--disable-notifications")
         self.driver = driver
+
+        self.list = []
 
         self.height = 100
         self.width = 300
@@ -67,7 +71,7 @@ class InstagramWindow(QWidget):
             if not ok:
                 print('oops')
 
-            driver = webdriver.Chrome(MainWindow.drv)
+            driver = webdriver.Chrome(self.driver)
             loginUrl = "https://www.instagram.com/accounts/login/?hl=en"
             driver.get(loginUrl)
             usr = driver.find_element_by_name("username")
@@ -102,7 +106,7 @@ class InstagramWindow(QWidget):
             if re.match(r'(.*)/p/(.*)', link):
                 # print(link)
 
-                driver2 = webdriver.Chrome(MainWindow.drv)
+                driver2 = webdriver.Chrome(self.driver)
                 url2 = link
                 driver2.get(url2)
 
@@ -117,12 +121,17 @@ class InstagramWindow(QWidget):
                 driver2.close()
 
         i = 0
+
         for pic in picsList:
-            print(pic)
+            # print(pic)
+            self.list.append(pic)
+
+
             # src = pic.get_attribute('src')
             # print(src)
             # request.urlretrieve(src, "%s.jpg" % i)
             i = i + 1
 
+        self.addSig.emit(self.list)
         driver.close()
 

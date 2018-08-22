@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QLineEdit, QPushButton, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QLineEdit, QPushButton, QVBoxLayout, QApplication
+import sys
 
 class TestWidget(QWidget):
 
@@ -20,3 +21,4 @@ class TestWidget(QWidget):
 
     def main(self):
         pass
+

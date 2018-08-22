@@ -61,14 +61,17 @@ class VscoWindow(QWidget):
         driver.get(url)
 
         linksList = []
-        nextPage = driver.find_element_by_xpath("//a[@title='Next']")
-        nextLink = nextPage.get_attribute('href')
 
-        driver.get(nextLink)
-        time.sleep(3)
+        # try:
+        #     nextPage = driver.find_element_by_xpath("//a[@title='Next']")
+        #     nextLink = nextPage.get_attribute('href')
+        #     # driver.get(nextLink)
+        # except Exception as e:
+        #     print(e)
+        #
+        # time.sleep(3)
+
         while True:
-            if re.match("(.*)/images/1", driver.current_url):
-                break
 
             # get all the links to pix
             linksObject = driver.find_elements_by_tag_name("a")
@@ -77,11 +80,16 @@ class VscoWindow(QWidget):
                 if re.match("(.*)/media/(.*)", l):
                     linksList.append(l)
 
-            nextPage = driver.find_element_by_xpath("//a[@title='Next']")
-            nextLink = nextPage.get_attribute('href')
+            try:
+                nextPage = driver.find_element_by_xpath("//a[@title='Next']")
+                nextLink = nextPage.get_attribute('href')
+                driver.get(nextLink)
+            except Exception as e:
+                print(e)
 
-            driver.get(nextLink)
             time.sleep(3)
+            if re.match("(.*)/images/1", driver.current_url):
+                break
 
         for link in linksList:
             driver.get(link)

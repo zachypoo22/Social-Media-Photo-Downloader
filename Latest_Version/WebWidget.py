@@ -2,11 +2,12 @@ from selenium import webdriver
 from selenium.webdriver.common import keys
 from selenium.webdriver import ActionChains
 from urllib import request
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLineEdit, QApplication, QToolBar, QAction, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLineEdit, QApplication, QToolBar, QAction, QHBoxLayout, QFileDialog
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QIcon
 import sys
+import re
 
 class WebWidget(QWidget):
     def __init__(self):
@@ -34,6 +35,7 @@ class WebWidget(QWidget):
         self.rightButton.clicked.connect(self.next)
         self.leftButton.clicked.connect(self.prev)
         self.saveButton.clicked.connect(self.save)
+        self.saveAllButton.clicked.connect(self.saveAll)
 
         buttLayout = QHBoxLayout()
         buttLayout.addSpacing(80)
@@ -98,7 +100,31 @@ class WebWidget(QWidget):
             print(e)
 
     def save(self):
-        pass
+        name = QFileDialog.getSaveFileName(self, 'save file')
+        filename = ""
+        if not re.match("(.+)\.(.+)", name[0]):
+            filename = "%s.jpg" % name[0]
+        else:
+            filename = name[0]
+
+        try:
+            request.urlretrieve(self.picList[self.i], filename)
+        except Exception as e:
+            print(e)
 
     def saveAll(self):
-        pass
+        name = QFileDialog.getSaveFileName(self, 'save file')
+
+        filename = ""
+        if not re.match("(.+)\.(.+)", name[0]):
+            filename = name[0]
+        else:
+            filename = name[0].split('.')[0]
+
+        j = 0
+        for pic in self.picList:
+            try:
+                request.urlretrieve(pic, "%s%d.jpg" % (filename, j))
+            except Exception as e:
+                print(e)
+            j += 1
